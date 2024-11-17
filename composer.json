@@ -1,0 +1,17 @@
+{
+    "name": "mey/construction-frameworkphp",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/",
+            "Core\\": "core/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mey",
+            "email": "meydetour@gmail.com"
+        }
+    ],
+    "require": {}
+}

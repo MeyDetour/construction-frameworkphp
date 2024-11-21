@@ -1,0 +1,55 @@
+#!/usr/bin/env php
+<?php
+
+//on autorise le fichier a etre utiliser que par php bin/console {arg}
+
+// $argv[1] pour recuperer {arg}
+
+switch ($argv[1]) {
+    case "serve":
+        print_r('Le server est en marche ! Go to http://localhost:8080 \n');
+        shell_exec("php -S localhost:8080 -t public");
+
+        break;
+
+    case "make":
+        make($argv[2]);
+}
+
+
+function make($what): void
+{
+    switch ($what) {
+        //RAPH
+        case "migration";
+        //make migration a faire
+            //supprimer les ancienens migrations quand on en cree une
+            // avant la premiere vider la bdd
+            break;
+
+
+            //MEY
+            case "migrate";
+        // file.put content fil.getContent juste pdo execute
+                // recupere le fichier de migration
+            break;
+
+
+            //KAYA
+        case "entity";
+        //demander le nom
+            //les propriétés ? ( id interdit car auto creer )
+            //le type (text , int , boolean )
+            //nullable ?
+            //Creer un fichier entity à partir d'un template et mettre juste des variables pour mettres els propéiéts avec getter et setter  //file putcontent
+            break;
+
+            //PIERRE
+        case "controller";
+            //demander juste demander le nom pour creer le controller, creation d'un template de controller
+            $question = readline('Quoi ?');
+            echo "la reponse : " . $question . "\n";
+            break;
+
+    }
+}

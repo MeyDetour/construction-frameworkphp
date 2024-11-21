@@ -138,11 +138,108 @@ abstract class Repository
 
 
     }
-    //resolve target entity
-    //resolvetablename
-    //findall
-    //Delete
-    //find
+    public function pluralize($word)
+    {
+        if (strlen($word) <= 2) {
+            return $word;
+        }
 
+        $last_letter = strtolower($word[strlen($word) - 1]);
+        switch ($last_letter) {
+            case 'y':
+                return substr($word, 0, -1) . 'ies';
+            case 's':
+                return $word . 'es';
+            case 'f':
+                return substr($word, 0, -1) . 'ves';
+            default:
+                return $word . 's';
+        }
+    }
+
+    public function createTable($var){
+        $reflection = new \ReflectionClass($var);
+        $originalClassName = $reflection->getShortName();
+
+        $className = lcfirst($originalClassName);
+        $className = $this->pluralize($className);
+        $sqlColumns = "";
+        $proprietes = $reflection->getProperties();
+
+
+        foreach ($proprietes as $index => $property) {
+
+            $propertyName = $property->name;
+            $propertyType = $property->getType()->getName();
+
+            if ($propertyName == "id" and $propertyType == "int") {
+                switch ($this->bdd){
+                    case "mysql":
+                        $sqlColumns = $sqlColumns . "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT";
+
+                        break;
+                    case "pgsql":
+                        $sqlColumns = $sqlColumns . "id SERIAL PRIMARY KEY";
+
+                        break;
+                    case "sqlite":
+                        $sqlColumns = $sqlColumns . "id INT PRIMARY KEY NOT NULL AUTO_INCREMENT";
+
+                        break;
+                }
+                } else {
+                switch ($propertyType) {
+
+                    case "string":
+
+                        switch ($this->bdd){
+                            case "mysql":
+
+                                $sqlColumns = $sqlColumns . $propertyName . " TEXT ";
+                                break;
+                            case "pgsql":
+
+                                $sqlColumns = $sqlColumns . $propertyName . " TEXT ";
+                                break;
+                            case "sqlite":
+
+                                $sqlColumns = $sqlColumns . $propertyName . " TEXT ";
+                                break;
+                        }
+                        break;
+
+                    case "int": switch ($this->bdd){
+
+                        case "mysql":
+
+                            $sqlColumns = $sqlColumns . $propertyName . " INT ";
+                            break;
+                        case "pgsql":
+
+                            $sqlColumns = $sqlColumns . $propertyName . " INTEGER ";
+                            break;
+                        case "sqlite":
+
+                            $sqlColumns = $sqlColumns . $propertyName . " INT ";
+                            break;
+                    }
+                        break;
+                        break;
+
+                }
+            }
+            if ($index != count($proprietes) - 1) {
+                $sqlColumns = $sqlColumns . ", ";
+            }
+
+        }
+        $sql = "CREATE TABLE " . $className . " (" . $sqlColumns . ");";
+
+        echo $sql;
+
+
+        $query = $this->pdo->prepare($sql);
+        $query->execute();
+    }
 
 }

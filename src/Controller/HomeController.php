@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
-use App\Repository\PizzaRepository;
+use App\Entity\Article;
+use App\Entity\ArticleInconnu;
+use App\Repository\ArticleRepository;
 use Core\Controller\Controller;
+use Core\Database\Database;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\View\View;
@@ -16,16 +19,24 @@ class HomeController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->repository = new PizzaRepository();
+        $this->repository = new ArticleRepository();
         $this->request = new Request();
     }
 
     public function index()
     {
-        $pizzas = $this->repository->findAll();
 
-        return $this->render('home/index', ["pizzas" => $pizzas]);
+        $article = new Article();
+
+        $repo = new ArticleRepository();
+        $repo->createTable($article);
+        //TODO :Differente syntaxt (serial,auto_increments..)  des sql
+
+
+        return $this->render('home/index', ["pizzas" => []]);
+
     }
+
 
     public function create(): Response
     {
@@ -54,7 +65,9 @@ class HomeController extends Controller
         }
         $pizza = $this->repository->findOne($_GET['id']);
         return $this->render('pizza/show', ["pizza" => $pizza]);
-    }    public function delete()
+    }
+
+    public function delete()
     {
         if (!isset($_GET['id'])) {
             return $this->redirect('?type=home&action=index');
